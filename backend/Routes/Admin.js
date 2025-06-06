@@ -152,24 +152,24 @@ adminRouter.put("/assessments/:id", auth, async(req, res) => {
         console.log(req)
         const assessments = await AssessmentsModel.findById(id);
         console.log(assessments);
-        if (!news) {
+        if (!assessments) {
             return res.status(404).json({ message: "Course not found" });
         }
         if (title) {
-            news.title = title;
+            assessments.title = title;
         }
         if (description) {
-            news.description = description;
+            assessments.description = description;
         }
         if (link) {
-            news.link = link;
+            assessments.link = link;
         }
         if (status) {
-            news.status = status;
+            assessments.status = status;
         }
         await assessments.save();
 
-        res.status(200).json({ message: "Course updated successfully",news: news });
+        res.status(200).json({ message: "Course updated successfully",assessments: assessments });
 });
 
 

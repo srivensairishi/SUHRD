@@ -153,7 +153,7 @@ function AdminNews() {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [news, setNews] = useState([]);
     const [newsToEdit, setNewsToEdit] = useState(null);
-    const [newNews, setNewNews] = useState({ title: "", description: "", link: "", thumbnail: "" });
+    const [newNews, setNewNews] = useState({ title: "", description: "", link: ""});
 
     useEffect(() => {
         const fetchNews = async () => {
@@ -218,7 +218,7 @@ function AdminNews() {
                 status: saved.status ? 'LIVE' : 'DRAFT',
                 publishDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
             }]);
-            setNewNews({ title: "", description: "", link: "", thumbnail: "" });
+            setNewNews({ title: "", description: "", link: ""});
             setShowUploadModal(false);
         } catch (err) {
             console.error("Upload error:", err);
@@ -362,13 +362,12 @@ function AdminNews() {
                                 <p className="text-center text-gray-500">Upload News</p>
                             </div>
                             <div className="flex-1 ml-6">
-                                <input type="text" name="title" value={newVideo.title} onChange={handleInputChange} placeholder="Title Here" className="w-full p-2 mb-4 border rounded focus:outline-none" />
-                                <textarea name="description" value={newVideo.description} onChange={handleInputChange} placeholder="Description here" className="w-full p-2 border rounded h-[160px] resize-none focus:outline-none" />
+                                <input type="text" name="title" value={newNews.title} onChange={handleInputChange} placeholder="Title Here" className="w-full p-2 mb-4 border rounded focus:outline-none" />
+                                <textarea name="description" value={newNews.description} onChange={handleInputChange} placeholder="Description here" className="w-full p-2 border rounded h-[160px] resize-none focus:outline-none" />
                             </div>
                         </div>
                         <div className="mt-4">
-                            <input type="text" name="link" value={newVideo.link} onChange={handleInputChange} placeholder="or Paste Link here" className="w-full p-2 border rounded focus:outline-none text-sm md:text-base" />
-                            <input type="text" name="thumbnail" value={newVideo.thumbnail} onChange={handleInputChange} placeholder="Thumbnail URL" className="w-full p-2 border rounded mt-2 focus:outline-none text-sm md:text-base" />
+                            <input type="text" name="link" value={newNews.link} onChange={handleInputChange} placeholder="or Paste Link here" className="w-full p-2 border rounded focus:outline-none text-sm md:text-base" />
                         </div>
                         <div className="flex justify-end gap-2 mt-4">
                             <button onClick={() => setShowUploadModal(false)} className="px-4 py-2 bg-gray-200 text-gray-700 rounded">Cancel</button>
