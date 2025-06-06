@@ -1,0 +1,50 @@
+.header-container {
+  background-color: #ad08f3;
+  width: 100%;
+  height: 80px;
+  display: flex;
+}
+
+
+.logo{
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  padding: 5px;
+}
+
+.button-section {
+  /* display: flex; */
+  gap: 10px;
+  margin-right: 1.25rem;
+}
+
+.btn {
+  height: 40px;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  border: 1px solid transparent;
+  cursor: pointer;
+  margin-top: 1.25rem;
+}
+
+.white-btn {
+  background-color: white;
+  color: #ad08f3;
+  width: 130px;
+  border: 1px solid #ad08f3;
+}
+
+.purple-btn {
+  background-color: #ad08f3;
+  color: white;
+  border: 1px solid white;
+  width: 130px;
+}
+.ea-button{
+  margin-left: 50px;
+}
+.u-button{
+  margin-left: 700px;
+}
