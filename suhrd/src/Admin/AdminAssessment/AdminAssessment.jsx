@@ -1,6 +1,7 @@
-import UserMenuBar from '../../User/UserMenuBar/UserMenuBar';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
+
 
 function AdminAssessment() {
     const [showUploadModal, setShowUploadModal] = useState(false);
@@ -22,17 +23,14 @@ function AdminAssessment() {
                 });
                 const data = await response.json();
                 const updatedAssessments = data.map((course, index) => ({
-                    id: course._id || index,
-
+                    id: course._id,
                     title: course.title,
                     description: course.description,
-                    imageUrl: course.imageUrl,
+                    link: course.link,
                     status: course.status ? 'LIVE' : 'DRAFT',
-
                     publishDate: new Date(course.createdAt).toLocaleDateString('en-GB', {
                         day: '2-digit', month: 'short', year: 'numeric'
                     }),
-                    
                 }));
                 setAssessments(updatedAssessments);
             } catch (err) {
@@ -41,12 +39,10 @@ function AdminAssessment() {
         };
         fetchAssessments();
     }, []);
-
     function handleInputChange(e) {
         const { name, value } = e.target;
         setNewAssessment(prev => ({ ...prev, [name]: value }));
     }
-
     async function handleSaveAssessment(status) {
         const token = Cookies.get("token");
         try {
@@ -59,7 +55,7 @@ function AdminAssessment() {
                 body: JSON.stringify({
                     title: newAssessment.title,
                     description: newAssessment.description,
-                    imageUrl: newAssessment.link,
+                    link: newAssessment.link,
                     status: status === 'LIVE'
                 })
             });
@@ -68,17 +64,16 @@ function AdminAssessment() {
                 id: saved._id,
                 title: saved.title,
                 description: saved.description,
-                imageUrl: saved.imageUrl,
+                link: saved.link,
                 status: saved.status ? 'LIVE' : 'DRAFT',
                 publishDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
             }]);
-            setNewAssessment({ title: "", description: "", link: "", thumbnail: "" });
+            setNewAssessment({ title: "", description: "", link: "" });
             setShowUploadModal(false);
         } catch (err) {
             console.error("Upload error:", err);
         }
     }
-
     async function handleUpdateAssessments() {
         const token = Cookies.get("token");
         try {
@@ -91,7 +86,7 @@ function AdminAssessment() {
                 body: JSON.stringify({
                     title: assessmentsToEdit.title,
                     description: assessmentsToEdit.description,
-                    imageUrl: assessmentsToEdit.imageUrl,
+                    link: assessmentsToEdit.link,
                     status: assessmentsToEdit.status === 'LIVE'
                 })
             });
@@ -155,16 +150,15 @@ function AdminAssessment() {
                 <div className='flex flex-col justify-between items-center'>
                     {assessments.map((assessment) => (
                         <div key={assessment.id} className='h-40 w-full rounded-lg flex jutify-center items-center shadow-2xl bg-white mt-2'>
-                            <div><img className='h-34 w-100 p-2' src={assessment.imageUrl} alt={assessment.title} /></div>
                             <div className='p-3'>
                                 <h3 className='font-bold'>{assessment.title}</h3>
                                 <p className='text-[#b5b0b0] text-sm'>{assessment.description}</p>
+                                <Link to={assessment.link} target='_blank' ><p>{assessment.link}</p></Link>
                                 <div className='flex p-2'>
                                     <button className={`ms-10 font-bold text-white rounded h-10 w-20 ${assessment.status === 'LIVE' ? 'bg-[#8dfa3e]' : 'bg-[#e5a61e]'}`}>{assessment.status}</button>
                                     <p className='ms-10 text-[#b5b0b0] text-sm'>Publish Date:<br /> {assessment.publishDate}</p>
                                     <div className="relative ml-auto">
-                                        <button className='mr-6 cursor-pointer'><img className='h-4 w-4' src="https://res.cloudinary.com/dcisrjaxp/image/upload/v1748421186/pencil_1_npb9wd.png" /></button>
-                                        <button onClick={() => toggleMenu(`dropdownMenu${assessment.id}`)} className='mr-6 cursor-pointer'><img className='h-4 w-4' src="https://res.cloudinary.com/dcisrjaxp/image/upload/v1748421203/menu-dots-vertical_1_x3ejev.png" /></button>
+                                        <button onClick={() => toggleMenu(`dropdownMenu${assessment.id}`)} className='mr-6 ms-170 cursor-pointer'><img className='h-4 w-4' src="https://res.cloudinary.com/dcisrjaxp/image/upload/v1748421203/menu-dots-vertical_1_x3ejev.png" /></button>
                                         <div id={`dropdownMenu${assessment.id}`} className="dropdown-menu absolute right-0 mt-2 w-56 bg-white border rounded shadow-lg hidden z-50">
                                             <div onClick={() => { setAssessmentsToEdit(assessment); setEditModalOpen(true); toggleMenu(`dropdownMenu${assessment.id}`); }} className="px-4 py-2 hover:bg-gray-100 border-b cursor-pointer">Edit Title & Description</div>
                                             <div onClick={async () => {
@@ -253,8 +247,8 @@ function AdminAssessment() {
                     </div>
                 </div>
             )}
-
-            <UserMenuBar />
+            <div className="mt-42">
+            </div>    
         </>
     );
 }

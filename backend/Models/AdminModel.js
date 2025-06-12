@@ -32,7 +32,7 @@ const videosSchema = new mongoose.Schema({
         required: true,
     },
     status: {
-        type: Boolean,
+        type: String,
         required: true,
     },
 }, {
@@ -88,6 +88,7 @@ const AdminModel = mongoose.model('Admin', adminSchema);
 const VideosModel = mongoose.model('Videos', videosSchema);
 const NewsModel = mongoose.model('News', newsSchema);
 const AssessmentsModel = mongoose.model('Assessments', assessmentsSchema);
+
 
 module.exports = {AdminModel , VideosModel  , NewsModel , AssessmentsModel};
 

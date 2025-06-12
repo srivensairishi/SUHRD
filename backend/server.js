@@ -4,7 +4,9 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173"
+}));
 app.use(express.json());
 const { userRouter } = require("./Routes/User.js");
 const { adminRouter } = require("./Routes/Admin.js");

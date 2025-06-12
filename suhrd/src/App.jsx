@@ -18,6 +18,9 @@ import UserNews from "./User/UserNews/UserNews.jsx";
 import UserAssessment from "./User/UserAssessment/UserAssessment.jsx";
 import AdminSignUp from "./SignUp/AdminSignup/AdminSignUp.jsx";
 import UserSignUp from "./SignUp/UserSignUp/UserSignUp.jsx";
+import AdminProtectedRoute from "./ProtectedRoutes/AdminPR.jsx";
+import UserProtectedRoute from "./ProtectedRoutes/UserPR.jsx";
+
 
 function App() {
   return (
@@ -31,23 +34,22 @@ function App() {
           <Route path="/adminsignup" element={<AdminSignUp />} />
           <Route path="/usersignup" element={<UserSignUp />} />
 
-          <Route path="/adminhome" element={<AdminHome />} />
-          <Route path="/userhome" element={<UserHome />} />
+          <Route path="/adminhome" element={<AdminProtectedRoute><AdminHome /></AdminProtectedRoute>} />
+          <Route path="/userhome" element={<UserProtectedRoute><UserHome /></UserProtectedRoute>} />
 
           <Route path="/admineditappcontent" element={<EditAppContent />} />
 
-          <Route path="/userticket" element={<UserTicketForm />} />
+          <Route path="/userticket" element={<UserProtectedRoute><UserTicketForm /></UserProtectedRoute>} />
 
-          <Route path="/adminvideos" element={<AdminVideos />} />
-          <Route path="/adminnews" element={<AdminNews />} />
-          <Route path="/adminassessment" element={<AdminAssessment />} />
+          <Route path="/adminvideos" element={<AdminProtectedRoute><AdminVideos /></AdminProtectedRoute>} />
+          <Route path="/adminnews" element={<AdminProtectedRoute><AdminNews /></AdminProtectedRoute>} />
+          <Route path="/adminassessment" element={<AdminProtectedRoute><AdminAssessment /></AdminProtectedRoute>} />
           
-          <Route path="/uservideos" element={<UserVideos />} />
-          <Route path="/usernews" element={<UserNews />} />
-          <Route path="/userassessment" element={<UserAssessment />} />
+          <Route path="/uservideos" element={<UserProtectedRoute><UserVideos /></UserProtectedRoute>} />
+          <Route path="/usernews" element={<UserProtectedRoute><UserNews /></UserProtectedRoute>} />
+          <Route path="/userassessment" element={<UserProtectedRoute><UserAssessment /></UserProtectedRoute>} />
         </Routes>
       </BrowserRouter>
-      {/* <UserVideos  /> */}
     </>
   )
 }

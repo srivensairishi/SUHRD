@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/UserModel");
 const { VideosModel, NewsModel, AssessmentsModel } = require("../Models/AdminModel");
-const auth = require("../Middleware/auth");
+const Userauth = require("../Middleware/Userauth");
 const userRouter = express.Router();
 
 userRouter.post("/usersignup", async (req, res) => {
@@ -45,7 +45,7 @@ userRouter.post("/userlogin", async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ msg: "Invalid credentials" });
         }
-        const token = jwt.sign({ id: user._id },process.env.JWT_SECRET,{ expiresIn: "1d" });
+        const token = jwt.sign({ id: user._id },process.env.JWT_USER_SECRET,{ expiresIn: "1d" });
         res.json({
             message: "Login successful",
             token,

@@ -2,8 +2,15 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const adminRouter = express.Router();
-const auth = require("../Middleware/auth");
+const Adminauth = require("../Middleware/Adminauth");
+// const Userauth = require("../Middleware/Userauth"); 
+
+
+
+
 const { AdminModel, VideosModel, NewsModel, AssessmentsModel } = require("../Models/AdminModel");
+
+
 
 adminRouter.post("/adminsignup", async (req, res) => {
     const { username, password } = req.body;
@@ -18,7 +25,7 @@ adminRouter.post("/adminsignup", async (req, res) => {
         await newAdmin.save();
         res.status(201).json({
              msg: "Admin registered successfully" ,
-             admin: { id: newAdmin._id, username: newAdmin.username, location: newAdmin.location }   
+             admin: { id: newAdmin._id, username: newAdmin.username, location: newAdmin.location }     
             });
     }
      catch (err) {
@@ -26,7 +33,9 @@ adminRouter.post("/adminsignup", async (req, res) => {
     }
 });
 
-adminRouter.post("/adminvideo", auth, async (req, res) => {
+
+
+adminRouter.post("/adminvideo", Adminauth, async (req, res) => {
     const { title, description, videoUrl, videoThumbnail, status } = req.body;
     if (!title || !description || !videoUrl || !videoThumbnail || status === undefined) {
         return res.status(400).json({ msg: "All fields are required" });
@@ -41,9 +50,11 @@ adminRouter.post("/adminvideo", auth, async (req, res) => {
     }
 });
 
-adminRouter.post("/adminnews", auth, async (req, res) => {
+
+
+adminRouter.post("/adminnews", Adminauth, async (req, res) => {
     const { title, description,imageUrl, status } = req.body;
-    if (!title || !description || !imageUrl || !status) {
+    if (!title || !description || !imageUrl || status === undefined) {
         return res.status(400).json({ msg: "All fields are required" });
     }
     try {
@@ -56,9 +67,11 @@ adminRouter.post("/adminnews", auth, async (req, res) => {
     }
 });
 
-adminRouter.post("/adminassessments", auth , async (req, res) => {
+
+
+adminRouter.post("/adminassessments", Adminauth , async (req, res) => {
     const { title, description, link, status } = req.body;
-    if (!title || !description || !link || !status) {
+    if (!title || !description || !link || status === undefined) {
         return res.status(400).json({ msg: "All fields are required" });
     }
     try {
@@ -70,6 +83,7 @@ adminRouter.post("/adminassessments", auth , async (req, res) => {
         res.status(500).json({ error: "Server error while adding assessment" });
     }
 });
+ 
 
 adminRouter.post("/adminlogin", async (req, res) => {
     const { username, password } = req.body;
@@ -80,7 +94,7 @@ adminRouter.post("/adminlogin", async (req, res) => {
         const isMatch = await bcrypt.compare(password, admin.password);
         if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
         
-        const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        const token = jwt.sign({ id: admin._id }, process.env.JWT_ADMIN_SECRET, { expiresIn: "1d" });
         res.status(200).json({ 
             msg: "Login successful",
             token,
@@ -91,7 +105,9 @@ adminRouter.post("/adminlogin", async (req, res) => {
     }
 });
 
-adminRouter.put("/video/:id", auth, async(req, res) => {
+
+
+adminRouter.put("/video/:id", Adminauth, async(req, res) => {
         const id  = req.params.id;
         const { title, description,videoUrl,videoThumbnail,status } = req.body;
         console.log(req)
@@ -120,7 +136,9 @@ adminRouter.put("/video/:id", auth, async(req, res) => {
         res.status(200).json({ message: "Course updated successfully",video: video });
 });
 
-adminRouter.put("/news/:id", auth, async(req, res) => {
+
+
+adminRouter.put("/news/:id", Adminauth, async(req, res) => {
         const id  = req.params.id;
         const { title, description,imageUrl,status } = req.body;
         console.log(req)
@@ -146,7 +164,9 @@ adminRouter.put("/news/:id", auth, async(req, res) => {
         res.status(200).json({ message: "Course updated successfully",news: news });
 });
 
-adminRouter.put("/assessments/:id", auth, async(req, res) => {
+
+
+adminRouter.put("/assessments/:id", Adminauth, async(req, res) => {
         const id  = req.params.id;
         const { title, description,link,status } = req.body;
         console.log(req)
@@ -173,7 +193,8 @@ adminRouter.put("/assessments/:id", auth, async(req, res) => {
 });
 
 
-adminRouter.delete("/video/:id", auth, async(req, res) => {
+
+adminRouter.delete("/video/:id", Adminauth, async(req, res) => {
         const id  = req.params.id;
         const video = await VideosModel.findByIdAndDelete(id);
         if (!video) {
@@ -183,7 +204,8 @@ adminRouter.delete("/video/:id", auth, async(req, res) => {
 })
 
 
-adminRouter.delete("/news/:id", auth, async(req, res) => {
+
+adminRouter.delete("/news/:id", Adminauth, async(req, res) => {
         const id  = req.params.id;
         const news = await NewsModel.findByIdAndDelete(id);
         if (!news) {
@@ -192,7 +214,9 @@ adminRouter.delete("/news/:id", auth, async(req, res) => {
         res.status(200).json({ message: "Course deleted successfully" });
 })
 
-adminRouter.delete("/assessments/:id", auth, async(req, res) => {
+
+
+adminRouter.delete("/assessments/:id", Adminauth, async(req, res) => {
         const id  = req.params.id;
         const assessments = await AssessmentsModel.findByIdAndDelete(id);
         if (!assessments) {

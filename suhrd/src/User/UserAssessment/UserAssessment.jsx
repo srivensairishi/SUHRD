@@ -1,142 +1,93 @@
-// import React from 'react';
-
-// const UserAssessment = () => {
-//   const guidelines = [
-//     {
-//       id: 1,
-//       title: 'Group Meeting Guidelines',
-//       description:'Lorem ipsum dolor sit amet. Est tenetur iste est ullam illum in ducimus dolore rem galisum nesciunt! Est tempora dicta id minima molestias ad asperiores quae? Et error illo cum voluptas cupiditate aut repudiandae dolores et velit modi sit omnis magn.........',
-//       link: 'www.forms.google.com/asnverEERV434bhk sdc',
-//       status: 'LIVE',
-//     },
-//     {
-//       id: 2,
-//       title: 'POSH Guidelines',
-//       description:'Lorem ipsum dolor sit amet. Est tenetur iste est ullam illum in ducimus dolore rem galisum nesciunt! Est tempora dicta id minima molestias ad asperiores quae? Et error illo cum voluptas cupiditate aut repudiandae dolores et velit modi sit omnis magn.........',
-//       link: 'www.forms.google.com/asnverEERV434bhk sdc',
-//       status: 'DRAFT',
-//     },
-//   ];
-
-  // const getStatusStyle = (status) => {
-  //   switch (status) {
-  //     case 'LIVE':
-  //       return 'bg-green-500 text-white';
-  //     case 'DRAFT':
-  //       return 'bg-yellow-500 text-white';
-  //     default:
-  //       return 'bg-gray-400 text-white';
-  //   }
-  // };
-
-//   return (
-    // <div className="max-w-5xl mx-auto px-4 py-10 space-y-4">
-    //     <p className='text-[#ad08f3] font-bold'>Assessments</p>        
-    //   {guidelines.map((item) => (
-    //     <div key={item.id} className="bg-white shadow rounded-xl p-4 flex justify-between items-start">
-    //       <div className="flex-1 pr-4">
-    //         <h3 className="text-base font-semibold mb-1">{item.title}</h3>
-    //         <p className="text-sm text-gray-600 mb-2">{item.description}</p>
-    //         <p className="text-sm">
-    //           <span className="font-semibold">LINK: </span>
-    //           <span className="text-blue-600 underline">{item.link}</span>
-    //         </p>
-    //       </div>
-    //       <div>
-    //         <span className={`text-xs px-3 py-1 rounded-full font-semibold ${getStatusStyle(item.status)}`}>{item.status}</span>
-    //       </div>
-    //     </div>
-    //   ))}
-    // </div>
-//   );
-// };
-
-// export default UserAssessment;
-
-
-
-
-
-//seperation of my code
-
-
-
-
-
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Cookies from "js-cookie";
+import { Link } from 'react-router-dom';
+import UserMenuBar from '../UserMenuBar/UserMenuBar';
 
-function UserAssessments() {
+function UserNews() {
     const [assessments, setAssessments] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+
     useEffect(() => {
         const fetchAssessments = async () => {
             const token = Cookies.get("token");
             if (!token) {
                 console.error("No token found");
                 setLoading(false);
+                return;
             }
             try {
-                const url = "http://localhost:4000/api/user/assessments";
-                const options = {
+                const response = await fetch("http://localhost:4000/api/user/assessments", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                         "authorization": `${token}`
                     }
-                };
-                const response = await fetch(url, options);
+                });
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+
                 const data = await response.json();
-                const updatedAssessments = data.upcomingAssessments.map((course) => ({
+
+                const updatedAssessments = data.map((course, index) => ({
+                    id: course._id || index,
                     title: course.title,
-                    description : course.description,
-                    link : course.link,
-                    status : course.status
+                    description: course.description,
+                    link: course.link,
+                    status: course.status,
+                    createdAt: new Date(course.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })
                 }));
+
                 setAssessments(updatedAssessments);
-                console.log(data);
+            } catch (err) {
+                console.error(err);
+                setError(err);
             } finally {
                 setLoading(false);
             }
         };
+
         fetchAssessments();
     }, []);
-    if (loading) {
-        return <div>Loading...</div>;
-    }
 
-    if (error) {
-        return <div>Error: {error.message}</div>;
-    }
-    
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
 
+    return (
+       
 
-return(
-  <>
-<div className="max-w-5xl mx-auto px-4 py-10 space-y-4">
-        <p className='text-[#ad08f3] font-bold'>Assessments</p>        
-      {assessments.map((item) => (
-        <div className="bg-white shadow rounded-xl p-4 flex justify-between items-start">
-          <div className="flex-1 pr-4">
-            <h3 className="text-base font-semibold mb-1">{item.title}</h3>
-            <p className="text-sm text-gray-600 mb-2">{item.description}</p>
-            <p className="text-sm">
-              <span className="font-semibold">LINK: <a href = "https://docs.google.com/forms/d/e/1FAIpQLSe3udevPT8WPerYWOV5kEbpUrZczNSRL50fOdAmDbwTdmeMaQ/viewform?usp=sharing&ouid=101060900586314609213"></a></span>
-              <span className="text-blue-600 underline">{item.link}</span>
-            </p>
-          </div>
-          <div>
-            <span className={`text-xs px-3 py-1 rounded-full font-semibold ${getStatusStyle(item.status)}`}>{item.status}</span>
-          </div>
+        <>
+        <div className="flex flex-col items-center px-4 pb-24">
+  <p className="text-[#ad08f3] font-bold text-xl mt-4 mb-4">Assessments</p>
+
+  {assessments.map((assessment) => (
+    <div key={assessment.id} className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-4 mb-4 flex justify-between items-start" >
+      <div className="flex flex-col gap-2 w-full pr-4">
+        <h3 className="text-lg font-bold text-black">{assessment.title}</h3>
+        <p className="text-sm text-gray-500">{assessment.description}</p>
+        <Link to={assessment.link} target="_blank" className="text-sm text-blue-600 break-all underline" > {assessment.link}</Link>
+        <div className="flex items-center gap-6 mt-2">
+          <button className={`font-bold text-white text-sm rounded px-4 py-2 ${assessment.status ? 'bg-[#8dfa3e]' : 'bg-[#e5a61e]'}`}>{assessment.status ? 'LIVE' : 'DRAFT'}</button>
+          <p className="text-xs text-gray-500"><span className="font-medium">Publish Date:</span><br />{assessment.createdAt}</p>
         </div>
-      ))}
-    </div>  
-  </>
-)    
+      </div>
+    </div>
+  ))}
 
+  <div className="fixed bottom-0 left-0 w-full">
+    
+  </div>
+</div>
+
+        </>
+    );
 }
 
-export default UserAssessments;
+export default UserNews;

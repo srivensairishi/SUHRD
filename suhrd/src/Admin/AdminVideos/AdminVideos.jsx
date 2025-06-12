@@ -1,6 +1,8 @@
-import UserMenuBar from '../../User/UserMenuBar/UserMenuBar';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
+
+
 
 function AdminVideos() {
     const [showUploadModal, setShowUploadModal] = useState(false);
@@ -72,7 +74,7 @@ function AdminVideos() {
                 videoUrl: saved.videoUrl,
                 status: saved.status ? 'LIVE' : 'DRAFT',
                 publishDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-                videoLength: "0:00"
+                videoLength: "6:01"
             }]);
             setNewVideo({ title: "", description: "", link: "", thumbnail: "" });
             setShowUploadModal(false);
@@ -158,7 +160,7 @@ function AdminVideos() {
                 <div className='flex flex-col justify-between items-center'>
                     {videos.map((video) => (
                         <div key={video.id} className='h-40 w-full rounded-lg flex jutify-center items-center shadow-2xl bg-white mt-2'>
-                            <div><img className='h-34 w-100 p-2' src={video.thumbnail} alt={video.title} /></div>
+                            <Link target="_blank" to = {video.videoUrl}><div><img className='h-38 w-80 p-2' src={video.thumbnail} alt={video.title} /></div></Link>
                             <div className='p-3'>
                                 <h3 className='font-bold'>{video.title}</h3>
                                 <p className='text-[#b5b0b0] text-sm'>{video.description}</p>
@@ -167,8 +169,8 @@ function AdminVideos() {
                                     <p className='ms-10 text-[#b5b0b0] text-sm'>Publish Date:<br /> {video.publishDate}</p>
                                     <p className='ms-10 text-[#b5b0b0] text-sm'>Video Length:<br /> {video.videoLength}</p>
                                     <div className="relative ml-auto">
-                                        <button className='mr-6 cursor-pointer'><img className='h-4 w-4' src="https://res.cloudinary.com/dcisrjaxp/image/upload/v1748421186/pencil_1_npb9wd.png" /></button>
-                                        <button onClick={() => toggleMenu(`dropdownMenu${video.id}`)} className='mr-6 cursor-pointer'><img className='h-4 w-4' src="https://res.cloudinary.com/dcisrjaxp/image/upload/v1748421203/menu-dots-vertical_1_x3ejev.png" /></button>
+                                        {/* <button className='mr-6 cursor-pointer'><img className='h-4 w-4' src="https://res.cloudinary.com/dcisrjaxp/image/upload/v1748421186/pencil_1_npb9wd.png" /></button> */}
+                                        <button onClick={() => toggleMenu(`dropdownMenu${video.id}`)} className='mr-6 cursor-pointer ms-100'><img className='h-4 w-4' src="https://res.cloudinary.com/dcisrjaxp/image/upload/v1748421203/menu-dots-vertical_1_x3ejev.png" /></button>
                                         <div id={`dropdownMenu${video.id}`} className="dropdown-menu absolute right-0 mt-2 w-56 bg-white border rounded shadow-lg hidden z-50">
                                             <div onClick={() => { setVideoToEdit(video); setEditModalOpen(true); toggleMenu(`dropdownMenu${video.id}`); }} className="px-4 py-2 hover:bg-gray-100 border-b cursor-pointer">Edit Title & Description</div>
                                             <div onClick={async () => {
@@ -245,11 +247,7 @@ function AdminVideos() {
                         <textarea name="description" value={videoToEdit.description} onChange={e => setVideoToEdit({ ...videoToEdit, description: e.target.value })} className="w-full p-2 border rounded h-[100px] resize-none" />
                         <div className="mt-4">
                             <label className="block mb-1 font-semibold">Status</label>
-                            <select
-                                value={videoToEdit.status}
-                                onChange={(e) => setVideoToEdit({ ...videoToEdit, status: e.target.value })}
-                                className="w-full p-2 border rounded"
-                            >
+                            <select value={videoToEdit.status} onChange={(e) => setVideoToEdit({ ...videoToEdit, status: e.target.value })} className="w-full p-2 border rounded" >
                                 <option value = "DRAFT" >DRAFT</option>
                                 <option value="LIVE">LIVE</option>
                             </select>
@@ -261,8 +259,8 @@ function AdminVideos() {
                     </div>
                 </div>
             )}
-
-            <UserMenuBar />
+            <div className="mt-42">
+            </div>   
         </>
     );
 }
